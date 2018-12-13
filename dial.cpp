@@ -1,11 +1,42 @@
 #include <GL/glut.h>
 #include <math.h>
- 
+
+static int windowWidth = 800;
+static int windowHeight = 800;
+
 static GLfloat x;
 static GLfloat y;
 static GLfloat z;
 static GLfloat radius;
 static GLint numberOfSides;
+
+void
+DisplayNeedle()
+{
+	GLfloat twicePi = 2.0f * M_PI;
+
+	glColor3f(0, 0.5, 0.5);
+	glLineWidth(10);
+
+	glBegin(GL_LINES);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(radius, 0.0, 0.0);
+	glEnd();
+
+	glBegin(GL_LINES);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(0.0, radius, 0.0);
+	glEnd();
+
+	glBegin(GL_LINES);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(radius * cos(0.33 * twicePi),
+		   radius * sin(0.33 * twicePi),
+		   0.0);
+	glEnd();
+
+	glFlush();
+}
 
 void
 DisplayDial()
@@ -61,14 +92,21 @@ DisplayDial()
 	glVertexPointer( 3, GL_FLOAT, 0, allCircleVertices );
 	glDrawArrays( GL_TRIANGLE_FAN, 0, numberOfVertices);
 	glDisableClientState( GL_VERTEX_ARRAY );
+}
+
+void
+DisplayGauge()
+{
+	DisplayDial();
+	DisplayNeedle();
 	glFlush();
 }
- 
+
 int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE);
-	glutInitWindowSize(800, 800);
+	glutInitWindowSize(windowWidth, windowHeight);
 	glutInitWindowPosition(100, 100);
 	glutCreateWindow("Dial");
 
@@ -76,8 +114,8 @@ int main(int argc, char** argv)
 	y = 0.0;
 	z = 0.0;
 	radius = 0.75;
-	numberOfSides = 64;
-	glutDisplayFunc(DisplayDial);
+	numberOfSides = 256;
+	glutDisplayFunc(DisplayGauge);
 
 	glutMainLoop();
 	return 0;
