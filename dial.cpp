@@ -9,6 +9,7 @@ static GLfloat y;
 static GLfloat z;
 static GLfloat radius;
 static GLint numberOfSides;
+static GLfloat pos = 0.0;
 
 void
 DisplayNeedle()
@@ -20,18 +21,8 @@ DisplayNeedle()
 
 	glBegin(GL_LINES);
 	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(radius, 0.0, 0.0);
-	glEnd();
-
-	glBegin(GL_LINES);
-	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(0.0, radius, 0.0);
-	glEnd();
-
-	glBegin(GL_LINES);
-	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(radius * cos(0.33 * twicePi),
-		   radius * sin(0.33 * twicePi),
+	glVertex3f(radius * 0.92 * cos(pos * twicePi),
+		   radius * 0.92 * sin(pos * twicePi),
 		   0.0);
 	glEnd();
 
@@ -73,12 +64,11 @@ DisplayDial()
 	glDrawArrays( GL_TRIANGLE_FAN, 0, numberOfVertices);
 	glDisableClientState( GL_VERTEX_ARRAY );
 
-	radius = radius * 0.92;
 	for ( int i = 1; i < numberOfVertices; i++ ) {
 		circleVerticesX[i] =
-			x + (radius * cos(i *  twicePi / numberOfSides));
+			x + (radius * 0.92 * cos(i *  twicePi / numberOfSides));
 		circleVerticesY[i] =
-			y + (radius * sin(i * twicePi / numberOfSides));
+			y + (radius * 0.92 * sin(i * twicePi / numberOfSides));
 		circleVerticesZ[i] = z;
 	}
 	for ( int i = 0; i < numberOfVertices; i++ ) {
@@ -102,6 +92,17 @@ DisplayGauge()
 	glFlush();
 }
 
+void
+TimerEvent(int te)
+{
+	pos += 0.02;
+	if (pos > 1.0)
+		pos = 0.0;
+
+	glutPostRedisplay();
+	glutTimerFunc(20, TimerEvent, 1);
+}
+
 int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
@@ -116,6 +117,7 @@ int main(int argc, char** argv)
 	radius = 0.75;
 	numberOfSides = 256;
 	glutDisplayFunc(DisplayGauge);
+	glutTimerFunc(20, TimerEvent, 1);
 
 	glutMainLoop();
 	return 0;
