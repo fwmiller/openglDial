@@ -17,7 +17,8 @@ DisplayNeedle()
 	GLfloat twicePi = 2.0f * M_PI;
 
 	glColor3f(0, 0.5, 0.5);
-	glLineWidth(10);
+	glLineWidth(64);
+	glEnable(GL_LINE_SMOOTH);
 
 	glBegin(GL_LINES);
 	glVertex3f(0.0, 0.0, 0.0);
@@ -95,6 +96,7 @@ DisplayGauge()
 void
 TimerEvent(int te)
 {
+	/* Update needle position */
 	pos += 0.02;
 	if (pos > 1.0)
 		pos = 0.0;
@@ -117,6 +119,7 @@ int main(int argc, char** argv)
 	radius = 0.75;
 	numberOfSides = 256;
 	glutDisplayFunc(DisplayGauge);
+
 	glutTimerFunc(20, TimerEvent, 1);
 
 	glutMainLoop();
